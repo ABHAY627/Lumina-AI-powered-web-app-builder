@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumina: AI-Powered Web App Builder
 
-## Getting Started
+![Lumina Poster](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/poster1.png)
+![Lumina Poster 2](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/poster2.png)
 
-First, run the development server:
+_Lumina_ is an innovative AI-driven platform that empowers you to build, manage, and deploy web applications seamlessly. Built with modern technologies like Next.js, Tailwind CSS (via shadcn/ui), PostgreSQL (provisioned by Neon), Prisma ORM, and Inngest for event-driven backend workflows, Lumina brings speed, flexibility, and intelligence to web development.
+
+---
+
+## 🚀 Features
+
+- **AI-Powered App Building:** Generate and customize web apps with the help of AI.
+- **Modern UI/UX:** Built with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/) for a sleek and responsive design.
+- **Robust Database Layer:** Uses [PostgreSQL](https://www.postgresql.org/) via [Neon](https://neon.tech/) for scalable, serverless database operations, managed with [Prisma ORM](https://www.prisma.io/).
+- **Event-Driven Backend:** [Inngest](https://www.inngest.com/) powers background jobs, workflow automation, and web activity recording.
+- **Easy Deployment:** Deploy anywhere Next.js apps run, with first-class support for Vercel.
+
+---
+
+## 🖼️ Clickable Posters
+
+[![Lumina Poster 1](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/poster1.png)](https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder)
+[![Lumina Poster 2](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/poster2.png)](https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** [Next.js](https://nextjs.org/), [shadcn/ui](https://ui.shadcn.com/), [Tailwind CSS](https://tailwindcss.com/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/) via [Neon](https://neon.tech/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Backend/Events:** [Inngest](https://www.inngest.com/)
+- **Hosting:** [Vercel](https://vercel.com/) (recommended), or any Node.js host
+
+---
+
+## ⚡ Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder.git
+cd Lumina-AI-powered-web-app-builder
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Setup Environment Variables
+
+Copy `.env.example` to `.env` and fill out your configuration.  
+You'll need credentials for Neon PostgreSQL, Prisma, and Inngest.
+
+```env
+DATABASE_URL=postgresql://...
+INNGEST_API_KEY=...
+NEXT_PUBLIC_API_KEY=...
+```
+
+### 4. Prisma Migrate
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+### 5. Run the App
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app will be running at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤝 Contributing
 
-## Learn More
+We welcome contributions! Please open issues or pull requests for bug fixes, feature requests, or improvements.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is licensed under the [MIT License](LICENSE).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌟 Acknowledgements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js](https://nextjs.org/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Neon](https://neon.tech/)
+- [Prisma](https://www.prisma.io/)
+- [Inngest](https://www.inngest.com/)
+
+---
+
+Made with ❤️ by Abhay Gautam 
+
+> _Empower your ideas. Build with Lumina._
