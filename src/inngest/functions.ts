@@ -9,8 +9,8 @@ export const helloWorld = inngest.createFunction(
     const agent = createAgent({
         name: "Code writer",
         system: "You are an expert Summarizer . You summarize in two words",
-        model: grok({ model: "grok-4-latest" }),
-    });
+        model: grok({ model: "gpt-4" }),
+    }); 
 
     const {output} = await agent.run(`Summarise the following text: ${event.data.value}`);
     // success message 
