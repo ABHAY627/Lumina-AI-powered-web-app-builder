@@ -4,14 +4,16 @@ import { prisma } from "@/lib/db";
 import { useTRPC } from "@/trpc/client";
 import React from "react";
 import {caller, getQueryClient ,trpc } from "@/trpc/server";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 
-//please remember thst only server components can be async functions 
+//please remember that only server components can be async functions 
+
 const Page = () => {
   const trpc=useTRPC();
+  const data = useQuery(trpc.createAI.queryOptions({ text: "Abhay Gautam" }));
   const invoke = useMutation(trpc.invoke.mutationOptions({
     onSuccess : () => {
       toast.success("Background job invoked!");

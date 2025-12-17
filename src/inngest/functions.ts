@@ -8,7 +8,7 @@ export const helloWorld = inngest.createFunction(
   async ({ event, step }) => {
     const agent = createAgent({
         name: "Code writer",
-        system: "You are an expert React.js software developer . You write codes for scalable web apps using React.js and Next.js. You write clean, efficient, and well-documented code. You are also proficient in using modern JavaScript (ES6+) features and best practices.",
+        system: "You are an expert Next.js developer . You write readable ,maintanable codes for scalable web apps using React.js and Next.js snippets.",
         model: gemini({ model: "gemini-2.5-flash" }),
     }); 
 
