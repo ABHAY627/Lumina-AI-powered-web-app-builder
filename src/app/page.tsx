@@ -8,17 +8,18 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-
 //please remember that only server components can be async functions 
 
 const Page = () => {
   const trpc=useTRPC();
   const data = useQuery(trpc.createAI.queryOptions({ text: "Abhay Gautam" }));
-  const invoke = useMutation(trpc.invoke.mutationOptions({
-    onSuccess : () => {
-      toast.success("Background job invoked!");
-    }
-  }));
+  const invoke = useMutation<{ success: boolean }, unknown, { value: string }>(
+    trpc.invoke.mutationOptions({
+      onSuccess: () => {
+        toast.success("Background job invoked!");
+      },
+    }),
+  );
   const [value, setValue] = React.useState("");
 
   return ( 
