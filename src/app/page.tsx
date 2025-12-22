@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 
 const Page = () => {
   const trpc = useTRPC();
-  const invoke = useMutation<{ success: boolean }, unknown, { value: string }>(
+  const invoke = useMutation(
     trpc.invoke.mutationOptions({
       onSuccess: () => {
         toast.success("Background job invoked!");

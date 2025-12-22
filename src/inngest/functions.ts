@@ -25,12 +25,19 @@ export const helloWorld = inngest.createFunction(
     const sandboxUrl = await step.run("start-server-and-get-url", async () => {
       const sandbox = await getSandbox(sandboxId);
 
-      // 🔥 THIS WAS MISSING
+
+
       await sandbox.commands.run(
-        "npm run dev -- -H 0.0.0.0 -p 5173"
+        "HOST=0.0.0.0 PORT=3000 npm run dev",
+        { background: true }
       );
-      
-      const host = sandbox.getHost(5173);
+
+      // wait for server to boot
+      await new Promise((r) => setTimeout(r, 8000));
+
+
+
+      const host = sandbox.getHost(3000);
       return `https://${host}`;
     });
 
