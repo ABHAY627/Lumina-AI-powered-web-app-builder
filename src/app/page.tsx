@@ -1,18 +1,12 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { prisma } from "@/lib/db";
 import { useTRPC } from "@/trpc/client";
 import React from "react";
-import {caller, getQueryClient ,trpc } from "@/trpc/server";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-//please remember that only server components can be async functions 
-
 const Page = () => {
-  const trpc=useTRPC();
-  const data = useQuery(trpc.createAI.queryOptions({ text: "Abhay Gautam" }));
+  const trpc = useTRPC();
   const invoke = useMutation<{ success: boolean }, unknown, { value: string }>(
     trpc.invoke.mutationOptions({
       onSuccess: () => {

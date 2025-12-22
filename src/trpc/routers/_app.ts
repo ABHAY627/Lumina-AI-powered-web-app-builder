@@ -19,7 +19,7 @@ export const appRouter = createTRPCRouter({
       return { success: true };
     }),
     
-  /*
+  
   createAI: baseProcedure
     .input(
       z.object({
@@ -30,7 +30,7 @@ export const appRouter = createTRPCRouter({
       return {
         greeting: `hello ${opts.input.text}`,
       };
-    }),*/
+    }),
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;
