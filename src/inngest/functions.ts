@@ -1,7 +1,14 @@
-import { createAgent, gemini } from "@inngest/agent-kit";
+import { createAgent, createNetwork, createTool, gemini } from "@inngest/agent-kit";
 import {Sandbox} from "@e2b/code-interpreter";
 import { inngest } from "./client";
-import { getSandbox } from "./utils";
+import { getSandbox, lastAssistantTextMessageContent } from "./utils";
+import z from "zod";
+import { stdout } from "process";
+import path from "path";
+import { Network } from "inspector/promises";
+import { create } from "domain";
+import { PROMPT } from "@/prompt";
+import { Code } from "lucide-react";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -14,34 +21,168 @@ export const helloWorld = inngest.createFunction(
 
     const agent = createAgent({
         // name: "Summarizer",
-        name: "Code writer",
-        // system: "You are an expert summarizer, you summarize in 2 words.",
-        system: "You are an expert Next.js developer . You write readable ,maintanable codes for scalable web apps using React.js and Next.js snippets.",
-        model: gemini({ model: "gemini-2.5-flash" }),
+        name: "CodeAgent", 
+        description : "An Expert Coding Agent", 
+        system: PROMPT,
+        model: gemini({ 
+          model: "gemini-2.5-flash",
+          // generationConfig:{
+          //   temperature:0.2,
+          //   maxOutputTokens: 1024,
+          // }
+        }),
+        tools:[
+          createTool({
+            name: "Terminal",
+            description: "Use this tool to run terminal commands in the code interpreter sandbox.",
+            parameters: z.object({
+              command: z.string(),
+            }),
+            handler : async ({ command },{step}) => {
+              return await step?.run("terminal",async() => {
+                const bufffer = {stdout:"", stderr:""};
+                try{
+                  const sandbox = await getSandbox(sandboxId);
+                  const result = await sandbox.commands.run(command, {
+                    background: false,
+                    onStdout: (data: string) => {
+                      bufffer.stdout += data;
+                    },
+                    onStderr: (data: string) => {
+                      bufffer.stderr += data;
+                    }
+                  });
+                  return result.stdout; 
+                }
+                catch(err){
+                  console.error(  
+                    `Command failed: ${err}\nstdout: ${bufffer.stdout}\nstderr: ${bufffer.stderr}`,
+                  );
+                  return `Command failed: ${err}\nstdout: ${bufffer.stdout}\nstderr: ${bufffer.stderr}`;
+                }
+              });
+            },
+          }),
+          createTool({
+            name:"createOrUpdateFiles",
+            description:"Use this tool to create or update files in the code interpreter sandbox.",
+            parameters: z.object({
+              files: z.array(
+                z.object({
+                  path: z.string(),
+                  content: z.string(),
+                }),
+              ),
+            }),
+            handler: async ({files},{step,network}) => {
+              const newFiles =  await step?.run("create-or-update-files",async() => {
+                try{
+                  const updatedFiles = network.state.data.files || {};
+                  const sandbox = await getSandbox(sandboxId);
+                  for(const file of files){
+                    await sandbox.files.write(file.path,file.content); 
+                    updatedFiles[file.path] = file.content;
+                  }
+                  return updatedFiles;
+                }catch(err){
+                  return "Error creating or updating files:" +  err;
+                }
+              });
+              if(typeof newFiles === "object"){
+                network.state.data.files = newFiles;
+              }
+            }, 
+          }),
+          createTool({
+            name:"readFiles",
+            description:"Use this tool to read files from the code interpreter sandbox.",
+            parameters: z.object({
+              files:z.array(z.string()),
+            }),
+            handler: async ({files},{step}) => {
+              return await step?.run("read-files",async() => {
+                try{
+                  const sandbox = await getSandbox(sandboxId);
+                  const contents = [];
+                  for(const file of files){
+                    const content = await sandbox.files.read(file);
+                    contents.push({path:file, content});
+                  }
+                  return JSON.stringify(contents);  
+                }catch(err){
+                  return "Error reading files:" + err;
+                }
+              });
+            },
+          })
+        ],
+        // lifecycle: {
+        //   onResponse: async ({result,network}) => {
+        //     const lastAssistantTextMessage = lastAssistantTextMessageContent(result);
+        //     if(lastAssistantTextMessage && network){
+        //       if(lastAssistantTextMessage.includes("<task_summary>")){
+        //         network.state.data.summary = lastAssistantTextMessage;
+        //       }
+        //     } 
+        //     return result;
+        //   },
+        // },
     }); 
 
-    const {output} = await agent.run(`${event.data.value}`);
-
-    const sandboxUrl = await step.run("start-server-and-get-url", async () => {
-      const sandbox = await getSandbox(sandboxId);
-
-
-
-      await sandbox.commands.run(
-        "HOST=0.0.0.0 PORT=3000 npm run dev",
-        { background: true }
-      );
-
-      // wait for server to boot
-      await new Promise((r) => setTimeout(r, 8000));
-
-
-
-      const host = sandbox.getHost(3000);
-      return `https://${host}`;
+    const network = createNetwork({
+      name:"Code-agent-Network",
+      agents:[agent],
+      maxIter: 5,
+      // state: {
+      //   data: {
+      //     files: {},
+      //     summary: null,
+      //   },
+      // },
+      // router : async({network}) => {
+      //   const summary = network.state.data.summary;
+      //   if(summary){
+      //     return;
+      //   }
+      //   return agent;
+      // }
+      router: async () => agent,
     });
 
-    // success message 
-    return {output , sandboxUrl};
+    //ye initial phase main kiya tha , ab kaam network se ho jaega .
+    // const {output} = await step.run("run-agent", async () => {
+    //   return await agent.run(`${event.data.value}`);
+    // });
+
+    // ab ye naya tareeka hai , network ke through karne ka .
+    const result = await network.run(`${event.data.value}`);
+
+
+    const sandboxUrl = await step.run("start-server-and-get-url", async () => {
+      try {
+        const sandbox = await getSandbox(sandboxId);
+        
+        await sandbox.commands.run(
+          "HOST=0.0.0.0 PORT=3000 npm run dev",
+          { background: true }
+        );
+
+        // wait for server to boot
+        await new Promise((r) => setTimeout(r, 8000));
+
+        const host = sandbox.getHost(3000);
+        return `https://${host}`;
+      } catch (err) {
+        console.error("Failed to start server:", err);
+        throw err;
+      }
+    });
+
+    return {
+      url:sandboxUrl,
+      title:"Fragment",
+      files:result.state.data.files,
+      // summary:result.state.data.summary,
+     };
   },
 );
