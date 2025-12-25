@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-
+  url = env("DATABASE_URL")
 }
 
 enum messageRole {
@@ -32,7 +32,7 @@ model message {
   fragment  fragment?
 }
 model fragment{
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   messageId String @unique
   message   message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
