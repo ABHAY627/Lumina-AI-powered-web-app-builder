@@ -1,25 +1,33 @@
-import { createAgent, createNetwork, createTool, gemini } from "@inngest/agent-kit";
+import { Agent, createAgent, createNetwork, createTool, gemini, Tool } from "@inngest/agent-kit";
 import {Sandbox} from "@e2b/code-interpreter";
 import { inngest } from "./client";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
-import z from "zod";
+import z, { string } from "zod";
 import { stdout } from "process";
 import path from "path";
 import { Network } from "inspector/promises";
 import { create } from "domain";
 import { PROMPT } from "@/prompt";
 import { Code } from "lucide-react";
+import { prisma } from "@/lib/db";
+import { messageRole, messageType } from "@/generated/prisma";
+
+interface Agentstate {
+  summary : string ;
+  files : {[path:string]:string} ;
+};
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
   { event: "test/hello.world" },
+  
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("lumina-next-app");
       return sandbox.sandboxId; 
     });
 
-    const agent = createAgent({
+    const agent = createAgent<Agentstate>({
         // name: "Summarizer",
         name: "CodeAgent", 
         description : "An Expert Coding Agent", 
@@ -33,7 +41,7 @@ export const helloWorld = inngest.createFunction(
         }),
         tools:[
           createTool({
-            name: "Terminal",
+            name: "terminal",
             description: "Use this tool to run terminal commands in the code interpreter sandbox.",
             parameters: z.object({
               command: z.string(),
@@ -74,7 +82,7 @@ export const helloWorld = inngest.createFunction(
                 }),
               ),
             }),
-            handler: async ({files},{step,network}) => {
+            handler: async ({files},{step,network}:Tool.Options<Agentstate>) => {
               const newFiles =  await step?.run("create-or-update-files",async() => {
                 try{
                   const updatedFiles = network.state.data.files || {};
@@ -116,37 +124,37 @@ export const helloWorld = inngest.createFunction(
             },
           })
         ],
-        // lifecycle: {
-        //   onResponse: async ({result,network}) => {
-        //     const lastAssistantTextMessage = lastAssistantTextMessageContent(result);
-        //     if(lastAssistantTextMessage && network){
-        //       if(lastAssistantTextMessage.includes("<task_summary>")){
-        //         network.state.data.summary = lastAssistantTextMessage;
-        //       }
-        //     } 
-        //     return result;
-        //   },
-        // },
+        lifecycle: {
+          onResponse: async ({result,network}) => {
+            const lastAssistantTextMessage = lastAssistantTextMessageContent(result);
+            if(lastAssistantTextMessage && network){
+              if(lastAssistantTextMessage.includes("<task_summary>")){
+                network.state.data.summary = lastAssistantTextMessage;
+              }
+            } 
+            return result;
+          },
+        },
     }); 
 
-    const network = createNetwork({
+    const network = createNetwork<Agentstate>({
       name:"Code-agent-Network",
       agents:[agent],
       maxIter: 5,
-      // state: {
+      // State: {          // ✅ YAHI CHANGE KARNA HAI
       //   data: {
       //     files: {},
       //     summary: null,
       //   },
       // },
-      // router : async({network}) => {
-      //   const summary = network.state.data.summary;
-      //   if(summary){
-      //     return;
-      //   }
-      //   return agent;
-      // }
-      router: async () => agent,
+      router : async({network}) => {
+        const summary = network.state.data.summary;
+        if(summary){
+          return;
+        }
+        return agent;
+      },
+      // router: async () => agent,
     });
 
     //ye initial phase main kiya tha , ab kaam network se ho jaega .
@@ -157,7 +165,11 @@ export const helloWorld = inngest.createFunction(
     // ab ye naya tareeka hai , network ke through karne ka .
     const result = await network.run(`${event.data.value}`);
 
+    const isError =
+    !result.state.data.summary ||
+    Object.keys(result.state.data.files || {}).length === 0;
 
+  
     const sandboxUrl = await step.run("start-server-and-get-url", async () => {
       try {
         const sandbox = await getSandbox(sandboxId);
@@ -178,11 +190,38 @@ export const helloWorld = inngest.createFunction(
       }
     });
 
+    await step.run("save-result", async () => {
+      if(isError){
+        return await prisma.message.create({
+          data: {
+            content: "Error generating fragment. Please try again.",  
+            role: messageRole.RESULT,
+            type: messageType.FRAGMENT,
+          },
+        });
+      }
+
+      return await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: messageRole.RESULT,
+          type: messageType.FRAGMENT,
+          fragment: {
+            create: {
+              sandboxUrl: sandboxUrl,
+              titles: "Fragment",
+              files: result.state.data.files,
+            },
+          },
+        },
+      });
+    });
+
     return {
       url:sandboxUrl,
       title:"Fragment",
       files:result.state.data.files,
-      // summary:result.state.data.summary,
+      summary:result.state.data.summary,
      };
   },
 );
