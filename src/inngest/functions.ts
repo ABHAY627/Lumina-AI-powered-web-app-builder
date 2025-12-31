@@ -1,4 +1,4 @@
-import { Agent, createAgent, createNetwork, createTool, gemini, Tool } from "@inngest/agent-kit";
+import { Agent, createAgent, createNetwork, createTool,gemini,Tool } from "@inngest/agent-kit";
 import {Sandbox} from "@e2b/code-interpreter";
 import { inngest } from "./client";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
@@ -138,23 +138,21 @@ export const helloWorld = inngest.createFunction(
     }); 
 
     const network = createNetwork<Agentstate>({
-      name:"Code-agent-Network",
-      agents:[agent],
+      name: "Code-agent-Network",
+      agents: [agent],
       maxIter: 5,
-      // State: {          // ✅ YAHI CHANGE KARNA HAI
+
+      // state: {
       //   data: {
       //     files: {},
-      //     summary: null,
+      //     summary: "",
       //   },
       // },
-      router : async({network}) => {
-        const summary = network.state.data.summary;
-        if(summary){
-          return;
-        }
+
+      router: async ({ network }) => {
+        if (network.state.data.summary) return;
         return agent;
       },
-      // router: async () => agent,
     });
 
     //ye initial phase main kiya tha , ab kaam network se ho jaega .
@@ -165,9 +163,9 @@ export const helloWorld = inngest.createFunction(
     // ab ye naya tareeka hai , network ke through karne ka .
     const result = await network.run(`${event.data.value}`);
 
-    const isError =
-    !result.state.data.summary ||
-    Object.keys(result.state.data.files || {}).length === 0;
+    // const isError =
+    // !result.state.data.summary ||
+    // Object.keys(result.state.data.files || {}).length === 0;
 
   
     const sandboxUrl = await step.run("start-server-and-get-url", async () => {
@@ -190,32 +188,34 @@ export const helloWorld = inngest.createFunction(
       }
     });
 
-    await step.run("save-result", async () => {
-      if(isError){
-        return await prisma.message.create({
-          data: {
-            content: "Error generating fragment. Please try again.",  
-            role: messageRole.RESULT,
-            type: messageType.FRAGMENT,
-          },
-        });
-      }
+    // await step.run("save-result", async () => {
+    //   if(isError){
+    //     return await prisma.message.create({
+    //       data: {
+    //         projectId: event.data.projectId,
+    //         content: "Error generating fragment. Please try again.",  
+    //         role: messageRole.RESULT,
+    //         type: messageType.FRAGMENT,
+    //       },
+    //     });
+    //   }
 
-      return await prisma.message.create({
-        data: {
-          content: result.state.data.summary,
-          role: messageRole.RESULT,
-          type: messageType.FRAGMENT,
-          fragment: {
-            create: {
-              sandboxUrl: sandboxUrl,
-              titles: "Fragment",
-              files: result.state.data.files,
-            },
-          },
-        },
-      });
-    });
+    //   return await prisma.message.create({
+    //     data: {
+    //       projectId: event.data.projectId,
+    //       content: result.state.data.summary,
+    //       role: messageRole.RESULT,
+    //       type: messageType.FRAGMENT,
+    //       fragment: {
+    //         create: {
+    //           sandboxUrl: sandboxUrl,
+    //           titles: "Fragment",
+    //           files: result.state.data.files,
+    //         },
+    //       },
+    //     },
+    //   });
+    // });
 
     return {
       url:sandboxUrl,

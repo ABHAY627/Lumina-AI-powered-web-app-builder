@@ -22,6 +22,13 @@ enum messageType {
   TEXT
   FRAGMENT
 }
+model project{
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+  messages  message[]
+}
 model message {
   id        String   @id @default(uuid())
   content   String
@@ -29,7 +36,12 @@ model message {
   type messageType 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  projectId String
+  project   project @relation(fields: [projectId], references: [id], onDelete: Cascade) 
+
   fragment  fragment?
+
 }
 model fragment{
   id        String @id @default(uuid())

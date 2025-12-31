@@ -7,23 +7,26 @@ import { Input } from "@/components/ui/input";
 
 const Page = () => {
   const trpc = useTRPC();
-  const {data:messages} = useQuery(trpc.messages.getMany.queryOptions());
-  const createMessage = useMutation(
-    trpc.messages.create.mutationOptions({
+  const createProject = useMutation(
+    trpc.projects.create.mutationOptions({
+      onError: (err) => {
+        toast.error(`Error creating project: ${err.message}`);
+      },
       onSuccess: () => {
-        toast.success("Message Created!");
+        toast.success("Project Created!");
       },
     }),
   );
   const [value, setValue] = React.useState("");
 
   return ( 
-    <div>
-      <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Enter the command" className="mb-4" />
-      <button  disabled = {createMessage.isPending} onClick ={() => createMessage.mutate({ value: value })} className="bg-blue-500 text-white px-4 py-2 rounded">
-        invoke background job   
-      </button>
-      {JSON.stringify(messages,null,2)};
+    <div className="h-screen w-screen flex justify-center items-center">
+      <div className="flex flex-col items-center justify-center gap-y-4 mx-auto max-w-7xl px-4">
+        <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Enter the command" className="mb-4" />
+        <button  disabled = {createProject.isPending} onClick ={() => createProject.mutate({ value: value })} className="bg-blue-500 text-white px-4 py-2 rounded">
+          SUBMIT Prompt
+        </button>
+      </div>
     </div>
    );
 }

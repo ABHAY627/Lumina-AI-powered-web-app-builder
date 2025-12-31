@@ -11,7 +11,7 @@ export const messagesRouter = createTRPCRouter({
                 orderBy: {  
                     updatedAt: "desc",
                 },
-                // include: {fragment:true},
+                include: {fragment:true},
             });
             return messages;
         }),
@@ -20,21 +20,25 @@ export const messagesRouter = createTRPCRouter({
         .input(
         z.object({
             value: z.string().min(1, { message: "Message is required" }),
+            projectId: z.string().min(1, { message: "projectId is required" }),
         })
     )
     .mutation(async ({ input }) => {
         const newMessage = await prisma.message.create({
             data: {
+                projectId: input.projectId,
                 content: input.value,
                 role: messageRole.RESULT,
                 type: messageType.FRAGMENT,
             },
         });
-    await inngest.send({
-        name: "test/hello.world",
-        data: { value: input.value },
-    });
-    return { success: true };
-    // return newMessage;
+        await inngest.send({
+            name: "test/hello.world",
+            data: {
+                value: input.value,
+                projectId: input.projectId,
+            },
+        });
+        return newMessage;
     }),
 });

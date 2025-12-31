@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { baseProcedure, createTRPCRouter } from '../init';
 import { inngest } from '@/inngest/client';
 import { messagesRouter } from '@/modules/messages/server/proceedure';
+import { projectsRouter } from '@/modules/projects/server/proceedure';
 
 // Define shared input schema for the `invoke` procedure
 // const invokeInput = z.object({
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   // ek tarah se api backend likha hua hai yahan par 
 
   messages : messagesRouter,
+  projects : projectsRouter,
     
   
   // createAI: baseProcedure
