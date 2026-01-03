@@ -4,16 +4,18 @@ import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const trpc = useTRPC();
   const createProject = useMutation(
     trpc.projects.create.mutationOptions({
       onError: (err) => {
         toast.error(`Error creating project: ${err.message}`);
       },
-      onSuccess: () => {
-        toast.success("Project Created!");
+      onSuccess: (data) => {
+        router.push(`/projects/${data.id}`);
       },
     }),
   );

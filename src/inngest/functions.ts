@@ -163,9 +163,9 @@ export const helloWorld = inngest.createFunction(
     // ab ye naya tareeka hai , network ke through karne ka .
     const result = await network.run(`${event.data.value}`);
 
-    // const isError =
-    // !result.state.data.summary ||
-    // Object.keys(result.state.data.files || {}).length === 0;
+    const isError =
+    !result.state.data.summary ||
+    Object.keys(result.state.data.files || {}).length === 0;
 
   
     const sandboxUrl = await step.run("start-server-and-get-url", async () => {
@@ -188,34 +188,33 @@ export const helloWorld = inngest.createFunction(
       }
     });
 
-    // await step.run("save-result", async () => {
-    //   if(isError){
-    //     return await prisma.message.create({
-    //       data: {
-    //         projectId: event.data.projectId,
-    //         content: "Error generating fragment. Please try again.",  
-    //         role: messageRole.RESULT,
-    //         type: messageType.FRAGMENT,
-    //       },
-    //     });
-    //   }
-
-    //   return await prisma.message.create({
-    //     data: {
-    //       projectId: event.data.projectId,
-    //       content: result.state.data.summary,
-    //       role: messageRole.RESULT,
-    //       type: messageType.FRAGMENT,
-    //       fragment: {
-    //         create: {
-    //           sandboxUrl: sandboxUrl,
-    //           titles: "Fragment",
-    //           files: result.state.data.files,
-    //         },
-    //       },
-    //     },
-    //   });
-    // });
+    await step.run("save-result", async () => {
+      if(isError){
+        return await prisma.message.create({
+          data: {
+            projectId: event.data.projectId,
+            content: "Error generating fragment. Please try again.",  
+            role: messageRole.RESULT,
+            type: messageType.FRAGMENT,
+          },
+        });
+      }
+      await prisma.message.create({
+        data: {
+          projectId: event.data.projectId,
+          content: result.state.data.summary,
+          role: messageRole.RESULT,
+          type: messageType.FRAGMENT,
+          fragment: {
+            create: {
+              sandboxUrl: sandboxUrl,
+              titles: "Fragment",
+              files: result.state.data.files,
+            },
+          },
+        },
+      });
+    });
 
     return {
       url:sandboxUrl,

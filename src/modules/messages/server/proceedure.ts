@@ -24,7 +24,7 @@ export const messagesRouter = createTRPCRouter({
         })
     )
     .mutation(async ({ input }) => {
-        const newMessage = await prisma.message.create({
+        const createdMessage = await prisma.message.create({
             data: {
                 projectId: input.projectId,
                 content: input.value,
@@ -39,6 +39,6 @@ export const messagesRouter = createTRPCRouter({
                 projectId: input.projectId,
             },
         });
-        return newMessage;
+        return createdMessage;
     }),
 });
