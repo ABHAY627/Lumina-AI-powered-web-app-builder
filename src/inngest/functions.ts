@@ -195,7 +195,7 @@ export const helloWorld = inngest.createFunction(
             projectId: event.data.projectId,
             content: "Error generating fragment. Please try again.",  
             role: messageRole.RESULT,
-            type: messageType.FRAGMENT,
+            type: messageType.TEXT,
           },
         });
       }
