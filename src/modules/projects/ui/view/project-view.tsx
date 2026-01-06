@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { MessagesContainer } from "../components/messages-container";
 import { fragment } from "@/generated/prisma";
 import { ProjectHeader } from "../components/project-header";
+import { FragmentWeb } from "../components/fragment-web";
 
 interface ProjectProps {
   projectId: string;
@@ -38,8 +39,8 @@ export const ProjectView = ({ projectId }: ProjectProps) => {
                     defaultSize={65}
                     minSize={50}
                 >
-                    TODO:PREVIEW
-                {/* {JSON.stringify(messages, null, 2)} */}
+                    {/* turning anything into boolean false(false) same aajat hai par boolean main */}
+                    {!!activeFragment && <FragmentWeb data={activeFragment}/>}
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

@@ -22,6 +22,7 @@ export const MessagesContainer = ({ projectId, activeFragment, setActiveFragment
         {refetchInterval: 5000}
     ));
     // automatically set active fragment to last assistant message's fragment
+    // so that we can drag it to the last message sent by assistant
     useEffect(() => {
     const lastAssistantMessageWithFragment = messages.findLast(
         // isko boolean mein convert kar dena hai taaki findLast sahi kaam kare
