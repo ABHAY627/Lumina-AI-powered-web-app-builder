@@ -15,12 +15,12 @@ datasource db {
 }
 
 enum messageRole {
-  RESULT
-  ERROR
+  RESULT  // ASSISTANT
+  ERROR   // USER
 }
 enum messageType {
-  TEXT
-  FRAGMENT
+  TEXT      // ERROR
+  FRAGMENT  // FRAGMENT
 }
 model project{
   id        String   @id @default(uuid())

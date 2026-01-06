@@ -2,32 +2,47 @@ import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCard } from "./message-card";
 import { MessageForm } from "./message-form";
-import { useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
+import { fragment } from "@/generated/prisma";
+import { set } from "zod";
+import { MessageLoading } from "./message-loading";
 
 
 interface MessagesContainerProps {
     projectId: string;
+    activeFragment: fragment|null;
+    setActiveFragment: (fragment: fragment | null) => void;
 }
-export const MessagesContainer = ({ projectId }: MessagesContainerProps) => {
+export const MessagesContainer = ({ projectId, activeFragment, setActiveFragment }: MessagesContainerProps) => {
     const trpc=useTRPC();
     const bottomRef = useRef<HTMLDivElement>(null);
     const {data:messages = []} = useQuery(trpc.messages.getMany.queryOptions({
-        projectId: projectId,
-    }));
+        projectId: projectId},
+        // TODO:TEMPORARY LIVE UPDATION SOLUTION
+        {refetchInterval: 5000}
+    ));
+    // automatically set active fragment to last assistant message's fragment
     useEffect(() => {
-    const lastAssistantMessage = messages.findLast(
-        (message) => message.role === "RESULT",
+    const lastAssistantMessageWithFragment = messages.findLast(
+        // isko boolean mein convert kar dena hai taaki findLast sahi kaam kare
+        (message) => message.role === "RESULT" && !!message.fragment,
     );
 
-    if (lastAssistantMessage) {
-        // TODO SET ACTIVE FRAGMENT
+    if (lastAssistantMessageWithFragment) {
+        setActiveFragment(lastAssistantMessageWithFragment.fragment);   
     }
-    }, [messages]);
+    }, [messages, setActiveFragment]);
 
     useEffect(() => {
     bottomRef.current?.scrollIntoView();
     }, [messages.length]);
 
+    const lastMessage = messages[messages.length - 1];
+    const isLastMessageUser = lastMessage?.role === "ERROR"; // agr last message user ka hai?
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({behavior:"smooth"});
+    }, [activeFragment]);
     return (
         <div className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 min-h-0 overflow-y-auto">
@@ -39,11 +54,12 @@ export const MessagesContainer = ({ projectId }: MessagesContainerProps) => {
                     role={message.role}
                     fragment={message.fragment}
                     createdAt={message.createdAt}
-                    isActiveFragment={false}
-                    onFragmentClick={() => {}}
+                    isActiveFragment={activeFragment?.id === message.fragment?.id}
+                    onFragmentClick={() => {setActiveFragment(message.fragment)}}
                     type={message.type}
                 />
                 ))}
+                {isLastMessageUser && <MessageLoading />}
                 {/* har reload par scroll karke neeche aane ke liye . */}
                 <div ref={bottomRef} />
             </div>
