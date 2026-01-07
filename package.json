@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "18": "^0.0.0",
+    "@clerk/nextjs": "^6.36.5",
+    "@clerk/themes": "^2.4.46",
     "@e2b/code-interpreter": "^2.3.3",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.2",
