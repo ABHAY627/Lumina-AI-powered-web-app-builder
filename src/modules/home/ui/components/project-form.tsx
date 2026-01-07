@@ -16,6 +16,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { is, tr } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { PROJECT_TEMPLATES } from "../../constants";
+import { useClerk } from "@clerk/nextjs";
 
 const formSchema = z.object({
   value: z
@@ -25,6 +26,8 @@ const formSchema = z.object({
 });
 
 export const ProjectForm = () => {
+    const clerk = useClerk();
+
     const trpc = useTRPC();
     const queryClient = useQueryClient();   
     const router = useRouter();
@@ -46,6 +49,11 @@ export const ProjectForm = () => {
             },      
 
             onError: (err) => {
+                if(err.data?.code==="UNAUTHORIZED"){
+                    clerk.openSignIn();
+                    // one more way
+                    // router.push("/sign-in")
+                }
                 // {TODO:REDIRECT TO PRICING PAGE IF SPECIFIC ERROR}
                 toast.error(`Error creating message: ${err.message}`);
             }

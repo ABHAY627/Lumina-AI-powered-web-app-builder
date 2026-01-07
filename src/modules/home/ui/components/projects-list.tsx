@@ -7,15 +7,20 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/nextjs";
 
 export const ProjectsList = () => {
   const trpc = useTRPC();
   const { data: projects } = useQuery(trpc.projects.getMany.queryOptions());
+  const {user}= useUser();
+  // we dont even load the projects-list if we dont have the user .
+  if(!user) return null;
+
 
   return (
     <div className="w-full bg-white dark:bg-sidebar rounded-xl p-8 border flex flex-col gap-y-6 sm:gap-y-4">
       <h2 className="text-2xl font-semibold">
-        Saved Luminates
+        {user?.firstName}&apos;s Luminates
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
