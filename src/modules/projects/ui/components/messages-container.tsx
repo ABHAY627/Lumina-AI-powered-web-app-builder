@@ -23,27 +23,32 @@ export const MessagesContainer = ({ projectId, activeFragment, setActiveFragment
     ));
     // automatically set active fragment to last assistant message's fragment
     // so that we can drag it to the last message sent by assistant
+    // modified in order to avoid scroll everytime 
+    // like we are scrolling only when there is message from the assistant with fragment different than current active fragment
+    const lastAssistantMessageIdRef = useRef<string | null>(null);
     useEffect(() => {
-    const lastAssistantMessageWithFragment = messages.findLast(
-        // isko boolean mein convert kar dena hai taaki findLast sahi kaam kare
-        (message) => message.role === "RESULT" && !!message.fragment,
-    );
+        const lastAssistantMessage = messages.findLast(
+            (message) => message.role === "RESULT"
+        );
 
-    if (lastAssistantMessageWithFragment) {
-        setActiveFragment(lastAssistantMessageWithFragment.fragment);   
-    }
+        if (
+            lastAssistantMessage?.fragment &&
+            lastAssistantMessage.id !== lastAssistantMessageIdRef.current
+        ) {
+            setActiveFragment(lastAssistantMessage.fragment);
+            lastAssistantMessageIdRef.current = lastAssistantMessage.id;
+        }
     }, [messages, setActiveFragment]);
 
+    // to scroll down to the last assistant message jab bhi activeFragment change ho
     useEffect(() => {
-    bottomRef.current?.scrollIntoView();
-    }, [messages.length]);
+        bottomRef.current?.scrollIntoView({behavior:"smooth"});
+    }, [activeFragment]);
 
     const lastMessage = messages[messages.length - 1];
     const isLastMessageUser = lastMessage?.role === "ERROR"; // agr last message user ka hai?
 
-    useEffect(() => {
-        bottomRef.current?.scrollIntoView({behavior:"smooth"});
-    }, [activeFragment]);
+
     return (
         <div className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 min-h-0 overflow-y-auto">
