@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { CodeView } from "@/code-view";
 import { FileExplorer } from "@/components/ui/file-explorer";
 import { UserControl } from "@/components/ui/user-control";
+import { ErrorBoundary } from "react-error-boundary";
 
 interface ProjectProps {
   projectId: string;
@@ -31,16 +32,21 @@ export const ProjectView = ({ projectId }: ProjectProps) => {
                     defaultSize={35}
                     minSize={20}
                     className="flex flex-col min-h-0"
-                >   <Suspense fallback={<div>Loading Project Header...</div>}>
-                    <ProjectHeader projectId={projectId} />
-                    </Suspense>
-                    <Suspense fallback={<div>Loading Messages...</div>}>    
-                        <MessagesContainer 
-                            projectId={projectId}
-                            activeFragment={activeFragment}
-                            setActiveFragment={setActiveFragment}
-                        />
-                    </Suspense> 
+                >  
+                    <ErrorBoundary fallback={<p>Project Header Error!</p>}>
+                        <Suspense fallback={<div>Loading Project Header...</div>}>
+                        <ProjectHeader projectId={projectId} />
+                        </Suspense>
+                    </ErrorBoundary> 
+                    <ErrorBoundary fallback={<p>Messages Container Error!</p>}>
+                        <Suspense fallback={<div>Loading Messages...</div>}>    
+                            <MessagesContainer 
+                                projectId={projectId}
+                                activeFragment={activeFragment}
+                                setActiveFragment={setActiveFragment}
+                            />
+                        </Suspense> 
+                    </ErrorBoundary>
                 </ResizablePanel>
 
                 <ResizableHandle className="hover:bg-primary transition-colors" />
