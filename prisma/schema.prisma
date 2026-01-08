@@ -56,3 +56,8 @@ model fragment{
   files Json
 }
 
+model usage{
+  key String @id
+  points Int
+  expire DateTime?
+}
