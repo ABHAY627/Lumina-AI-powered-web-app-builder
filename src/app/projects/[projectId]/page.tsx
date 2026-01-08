@@ -1,21 +1,20 @@
+// src/app/projects/[projectId]/page.tsx
+
 import { ProjectView } from "@/modules/projects/ui/view/project-view";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
 
-interface Props {
-  params: {
-    projectId: string;
-  };
+interface PageProps {
+  params: Promise<{ projectId: string }>;
 }
 
-const Page = async ({ params }: Props) => {
+const Page = async ({ params }: PageProps) => {
   const { projectId } = await params;
 
   const queryClient = getQueryClient();
 
-  // Prefetch EXACT same queries used on client
   await queryClient.prefetchQuery(
     trpc.projects.getOne.queryOptions({
       id: projectId,
