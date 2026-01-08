@@ -3,6 +3,7 @@ import { CrownIcon } from "lucide-react";
 import {formatDuration,intervalToDuration} from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@clerk/nextjs";
+import { useMemo } from "react";
 
 interface Props{
     points : number;
@@ -11,6 +12,22 @@ interface Props{
 export const Usage = ({ points, msBeforeNext }: Props) => {
     const {has} = useAuth();
     const hasProAccess = has?.({plan:"pro"});
+    // so that any inbuilt error generated from date fns should not crash the whole website 
+    // if error came then it will {display resets} in instead of complete crash
+    const resetTime = useMemo(()=>{
+            try{
+                return formatDuration(
+                    intervalToDuration({
+                        start:new Date(),
+                        end:new Date(Date.now()+msBeforeNext),
+                    }),
+                    {format:["months","days","hours"]}
+                )
+            }catch(err){
+                console.error("Error Formatting Duration",err);
+                return "soon";
+            }
+        },[msBeforeNext]);
 
   return (
     <div className="rounded-t-xl bg-background border border-b-0 p-2.5">
@@ -21,16 +38,9 @@ export const Usage = ({ points, msBeforeNext }: Props) => {
           </p>
 
           <p className="text-xs text-muted-foreground">
-            Resets in{" "}
-            {formatDuration(
-              intervalToDuration({
-                start: new Date(),
-                end: new Date(Date.now() + msBeforeNext),
-              }),
-              {format:["months","days","hours"]}
-            )}
+            Resets in{" "}{resetTime}
           </p>
-        </div>
+        </div>  
         {!hasProAccess && (
         <Button
             asChild 
