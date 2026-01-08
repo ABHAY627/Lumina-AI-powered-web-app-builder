@@ -44,18 +44,22 @@ export const ProjectForm = () => {
                 queryClient.invalidateQueries(
                     trpc.projects.getMany.queryOptions(),
                 );
-                // {TODO:invalidate usage status}
+                queryClient.invalidateQueries(
+                    trpc.usage.status.queryOptions(),
+                );
                 router.push(`/projects/${data.id}`);
             },      
 
             onError: (err) => {
+                toast.error(err.message);
                 if(err.data?.code==="UNAUTHORIZED"){
                     clerk.openSignIn();
                     // one more way
                     // router.push("/sign-in")
                 }
-                // {TODO:REDIRECT TO PRICING PAGE IF SPECIFIC ERROR}
-                toast.error(`Error creating message: ${err.message}`);
+                if(err.data?.code==="TOO_MANY_REQUESTS"){
+                    router.push("/pricing");
+                }
             }
         },
     ));

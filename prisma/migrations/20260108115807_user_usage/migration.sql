@@ -41,6 +41,15 @@ CREATE TABLE "fragment" (
     CONSTRAINT "fragment_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "usage" (
+    "key" TEXT NOT NULL,
+    "points" INTEGER NOT NULL,
+    "expire" TIMESTAMP(3),
+
+    CONSTRAINT "usage_pkey" PRIMARY KEY ("key")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "fragment_messageId_key" ON "fragment"("messageId");
 

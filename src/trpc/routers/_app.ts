@@ -3,6 +3,7 @@ import { baseProcedure, createTRPCRouter } from '../init';
 import { inngest } from '@/inngest/client';
 import { messagesRouter } from '@/modules/messages/server/proceedure';
 import { projectsRouter } from '@/modules/projects/server/proceedure';
+import { usageRouter } from '@/modules/home/usage/server/procedures';
 
 // Define shared input schema for the `invoke` procedure
 // const invokeInput = z.object({
@@ -12,9 +13,9 @@ import { projectsRouter } from '@/modules/projects/server/proceedure';
 export const appRouter = createTRPCRouter({
 
   // ek tarah se api backend likha hua hai yahan par 
-
   messages : messagesRouter,
   projects : projectsRouter,
+  usage : usageRouter,
     
   
   // createAI: baseProcedure
