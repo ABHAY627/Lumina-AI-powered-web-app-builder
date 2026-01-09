@@ -1,139 +1,122 @@
-# 🎨 Lumina - AI-Powered Web App Builder
+# Lumina — AI-powered web app builder
 
-![Lumina Logo](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/logo.png)
+![Lumina Logo](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/public/logo.svg)
 
-> Build stunning web applications with the power of AI. Lumina makes web development faster, smarter, and more intuitive.
+Build apps and websites by chatting with AI — generate components, pages, and full projects with live previews and runnable sandboxes.
 
-## ✨ Features
-
-- 🤖 **AI-Powered Code Generation** - Let AI handle the boilerplate and repetitive code
-- 🎯 **Intuitive Interface** - Drag-and-drop components with real-time preview
-- ⚡ **Lightning Fast** - Optimized performance for modern web applications
-- 🎨 **Customizable Themes** - Choose from pre-built themes or create your own
-- 📱 **Responsive Design** - Build apps that work on all devices
-- 🔌 **Plugin Ecosystem** - Extend functionality with community plugins
-- 💾 **Cloud Storage** - Save and sync your projects seamlessly
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-- Modern web browser
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder.git
-
-# Navigate to the project directory
-cd Lumina-AI-powered-web-app-builder
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm start
-```
-
-The application will be available at `http://localhost:3000`
-
-## 📖 Usage
-
-### Creating Your First Project
-
-1. Open Lumina in your browser
-2. Click "New Project" to create a new application
-3. Select a template or start from scratch
-4. Use the AI assistant to generate components
-5. Customize the design with the visual editor
-6. Preview your app in real-time
-7. Deploy directly to your hosting platform
-
-### AI Features
-
-- **Smart Code Suggestions** - Get intelligent code completion as you type
-- **Component Generation** - Describe what you want, and AI builds it
-- **Performance Optimization** - Automatic performance analysis and suggestions
-- **Documentation Generation** - Auto-generate docs for your components
-
-## 🏗️ Architecture
-
-```
-Lumina/
-├── frontend/          # React-based UI
-├── backend/           # Node.js API server
-├── ai-engine/         # AI processing module
-├── plugins/           # Community plugins
-└── docs/              # Documentation
-```
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React, TypeScript, Tailwind CSS
-- **Backend**: Node.js, Express, MongoDB
-- **AI**: OpenAI API, TensorFlow.js
-- **Deployment**: Docker, Kubernetes
-- **Storage**: AWS S3, Firebase
-
-## 📸 Screenshots
-
-### Dashboard
-![Dashboard](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/dashboard.png)
-
-### Component Builder
-![Component Builder](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/builder.png)
-
-### AI Assistant
-![AI Assistant](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/assets/ai-assistant.png)
-
-## 🧪 Testing
-
-```bash
-# Run unit tests
-npm test
-
-# Run integration tests
-npm run test:integration
-
-# Generate coverage report
-npm run test:coverage
-```
-
-## 📝 Contributing
-
-We welcome contributions from the community! To contribute:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Support
-
-- 📧 Email: [support@lumina-builder.com](mailto:support@lumina-builder.com)
-- 💬 Discord: [Join our community](https://discord.gg/lumina)
-- 📚 Documentation: [docs.lumina-builder.com](https://docs.lumina-builder.com)
-- 🐛 Issues: [Report a bug](https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder/issues)
-
-## 🌟 Acknowledgments
-
-Special thanks to all contributors and the open-source community for their support and inspiration.
+Live demo: [Go To Website](https://lumina-ai-powered-web-app-builder-u.vercel.app/)
 
 ---
 
-<div align="center">
+## Posters
 
-Made with ❤️ by [ABHAY627](https://github.com/ABHAY627)
+![Landing Poster](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/public/Landing.png)
 
-[⬆ back to top](#-lumina---ai-powered-web-app-builder)
+![Chats Poster](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/public/Chats.png)
 
-</div>
+![Billing Poster](https://raw.githubusercontent.com/ABHAY627/Lumina-AI-powered-web-app-builder/main/public/Billing.png)
+
+---
+
+## Key features
+
+- 🚀 Next.js 15 + React 19  
+- 🎨 Tailwind v4 + Shadcn/ui  
+- 📡 tRPC for full-stack type safety  
+- 🔁 Inngest background jobs  
+- 🧠 Inngest agent toolkit  
+- 🔐 Clerk authentication  
+- 💳 Clerk billing  
+- 🧱 Component and app generation from AI prompts  
+- 🗂️ Live project preview with URL access  
+- 🖥️ E2B cloud sandboxes for runtime execution  
+- 🐳 Docker-based sandbox templating  
+- 🧠 AI model support (OpenAI, Anthropic, Grok)  
+- 📦 Prisma + Neon for database integration  
+- 🤖 CodeRabbit AI-powered PR reviews  
+- 🧾 Built-in credit system with usage tracking  
+- 🧪 Preview + code explorer toggle
+
+---
+
+## Why Lumina
+
+Lumina helps designers, PMs, and developers quickly iterate on ideas by describing the interface and behavior in plain language. It produces usable code, runs previews in isolated sandboxes, and integrates billing and credits so you can safely control AI usage.
+
+---
+
+## Quickstart (local)
+
+Requirements: Node 20+, pnpm (or npm/yarn), Docker (for local sandbox templating), Neon/Postgres, Clerk account, AI provider keys.
+
+1. Clone
+```bash
+git clone https://github.com/ABHAY627/Lumina-AI-powered-web-app-builder.git
+cd Lumina-AI-powered-web-app-builder
+```
+
+2. Install
+```bash
+pnpm install
+```
+
+3. Copy env and fill values
+```bash
+cp .env.example .env
+# edit .env with your DATABASE_URL, CLERK keys, AI keys, INNGEST keys, etc.
+```
+
+4. Run
+```bash
+pnpm dev
+# open http://localhost:3000
+```
+
+Try a prompt like:
+> "Build a kanban board with drag-and-drop using react-beautiful-dnd and local state."
+
+---
+
+## Important env vars (examples)
+
+- DATABASE_URL
+- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+- CLERK_SECRET_KEY
+- INNGEST_API_KEY
+- INNGEST_AGENT_KEY
+- OPENAI_API_KEY / ANTHROPIC_API_KEY / GROK_API_KEY
+- NEON_PROJECT_ID
+- S3 / STORAGE provider details
+
+Refer to `.env.example` for the full set of expected variables.
+
+---
+
+## Architecture (summary)
+
+- Frontend: Next.js 15 + React 19 (app dir) + Tailwind v4 + shadcn/ui  
+- API: tRPC endpoints for type-safe communication  
+- Background: Inngest for jobs & agents  
+- Sandboxes: Docker-based E2B sandboxes for live previews  
+- DB: Prisma + Neon (Postgres)  
+- Auth & Billing: Clerk  
+- AI: Pluggable adapters for OpenAI, Anthropic, Grok  
+- PR Reviews & QA: CodeRabbit integrations
+
+---
+
+## Contributing
+
+- Open issues for bugs and feature requests.
+- Send PRs to main with tests and formatting.
+- Add poster images to `public/` and reference them in README as needed.
+
+---
+
+## License & Credits
+
+MIT (update LICENSE if necessary). Built with Open Source tools and AI.
+
+---
+
+Made with ❤️ by [ABHAY GAUTAM](https://github.com/ABHAY627)
