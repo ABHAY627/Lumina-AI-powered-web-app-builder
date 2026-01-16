@@ -119,4 +119,6 @@ MIT (update LICENSE if necessary). Built with Open Source tools and AI.
 
 ---
 
+⭐ If this project helped you, please star it!
+
 Made with ❤️ by [ABHAY GAUTAM](https://github.com/ABHAY627)
